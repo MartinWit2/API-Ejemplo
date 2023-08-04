@@ -1,21 +1,23 @@
 {
-  "name": "api-ejemplo",
+  "name": "primertrabajoangie",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MartinWit2/API-Ejemplo.git"
+  "dependencies": {
+    "expo": "~49.0.5",
+    "expo-status-bar": "~1.6.0",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "0.72.3",
+    "react-native-web": "^0.19.7"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MartinWit2/API-Ejemplo/issues"
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
   },
-  "homepage": "https://github.com/MartinWit2/API-Ejemplo#readme"
+  "private": true
 }
