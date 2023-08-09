@@ -1,53 +1,20 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
-export default function App() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const Stack = createStackNavigator();
 
-  const handleLogin = () => {
-    if (username === '' || password === '') {
-      Alert.alert('Error', 'Ingrese el usuario y la contraseña.');
-    } else {
-
-      console.log('Inicio de sesión exitoso');
-    }
-  };
-
+const AppNavigator = () => {
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Usuario"
-        value={username}
-        onChangeText={text => setUsername(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={text => setPassword(text)}
-      />
-      <Button title="Iniciar sesión" onPress={handleLogin} />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingLeft: 10,
-  },
-});
+export default AppNavigator;
