@@ -7,8 +7,9 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    if (username === '' || password === '') {
+    if (username != 'pepe' || password !='pepa') {
       Alert.alert('Error', 'Ingrese el usuario y la contraseña.');
+      console.log("Error, ingrese bien el usuario y la contraseña")
     } else {
       console.log('Inicio de sesión exitoso');
     }
