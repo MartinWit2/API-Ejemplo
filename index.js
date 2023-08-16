@@ -15,7 +15,7 @@ const users = [
       return res.status(401).send({ error: 'usuarios incorrectos, AHHHHHHHHH!!' });
     }
   
-    res.send({ message: 'entramos chavales!!!' });
+    return res.send({ message: 'entramos chavales!!!' });
   });
   
   const port = 5000;
@@ -23,3 +23,4 @@ const users = [
     console.log("listening on port:", port);
   })
 
+  

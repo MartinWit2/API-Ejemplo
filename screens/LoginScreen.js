@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Modal } from 'react-native';
 import Button from '../components/Button';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [textoModal, setTextoModal] = useState("Inicio de sesión exitoso");
 
   const handleLogin = () => {
-    if (username != 'pepe' || password !='pepa') {
-      Alert.alert('Error', 'Ingrese el usuario y la contraseña.');
-      console.log("Error, ingrese bien el usuario y la contraseña")
+    if (username !== 'pepe' || password !== 'pepa') {
+      // Mostrar mensaje de error
+      console.log("Error, ingrese bien el usuario y la contraseña");
+      setTextoModal("Error, ingrese bien el usuario y la contraseña");
+      setShowSuccessModal(true);
     } else {
-      console.log('Inicio de sesión exitoso');
+      // Mostrar el modal de inicio de sesión exitoso
+      setTextoModal("Inicio de sesión exitoso");
+      setShowSuccessModal(true);
+      // Llamar a la función onLoginSuccess para manejar la lógica adicional
+      onLoginSuccess();
     }
   };
 
-  const handleRegisterNavigation = () => {
-    navigation.navigate('Register');
+  const closeModal = () => {
+    setShowSuccessModal(false);
+    setTextoModal("Inicio de sesión exitoso");
   };
 
   return (
@@ -36,7 +45,19 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={text => setPassword(text)}
       />
       <Button title="Iniciar sesión" onPress={handleLogin} />
-      <Button title="Registrarse" onPress={handleRegisterNavigation} />
+      <Button title="Registrarse" onPress={() => navigation.navigate('Register')} />
+
+      {/* Modal de Inicio de Sesión Exitoso */}
+      <Modal visible={showSuccessModal} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>{textoModal}</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -58,6 +79,34 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 10,
     backgroundColor: 'white',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 15,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  closeButton: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
