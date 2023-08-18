@@ -10,9 +10,14 @@ const RegisterScreen = () => {
     if (registerUsername === '' || registerPassword === '') {
       Alert.alert('Error', 'Ingrese un usuario y una contraseña válidos.');
     } else {
+      console.log(registerUsername);
+      console.log(registerPassword);
       console.log('Registro exitoso');
+      
+      
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -22,6 +27,7 @@ const RegisterScreen = () => {
         placeholder="Nuevo usuario"
         value={registerUsername}
         onChangeText={text => setRegisterUsername(text)}
+        
       />
       <TextInput
         style={styles.input}
