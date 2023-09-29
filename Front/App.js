@@ -23,8 +23,8 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Modal, Text, TouchableOpacity, View } from 'react-native'; // Importa los componentes necesarios
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
+import LoginScreen from './screens/Login';
+import RegisterScreen from './screens/SignUp';
 
 const Stack = createStackNavigator();
 
@@ -45,7 +45,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Login">
           {props => <LoginScreen {...props} onLoginSuccess={handleLoginSuccess} />}
         </Stack.Screen>
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="SignUp" component={RegisterScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Link } from '@react-navigation/native';
 import Input from '../components/Input';
-import { commonStyles } from '../styles';
+//import { commonStyles } from '../styles';
 
 function Login({ navigation }) {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsuario] = React.useState('');
+  const [password, setContraseña] = React.useState('');
   const [message, setMessage] = React.useState('');
 
   const login = () => {
@@ -25,6 +25,7 @@ function Login({ navigation }) {
 
     fetch('http://localhost:5000/login', options)
       .then(response => response.json())
+      console.log(user)
       .then(response => {
         if (response.message === 'authenticated') {
           setMessage('Usuario autenticado correctamente');
@@ -38,8 +39,8 @@ function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Login</Text>
-      <Input label='Usuario' placeholder='Ingrese su Nombre de Usuario' setUsername={setUsername} secureTextEntry={false} />
-      <Input label='Contraseña' placeholder='Ingrese su Contraseña' setPassword={setPassword} secureTextEntry={true} />
+      <Input label='Usuario' placeholder='Ingrese su Nombre de Usuario' setUsername={setUsuario} secureTextEntry={false} />
+      <Input label='Contraseña' placeholder='Ingrese su Contraseña' setPassword={setContraseña} secureTextEntry={true} />
       <TouchableOpacity style={styles.button} onPress={login}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
@@ -54,10 +55,10 @@ function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'right',
+    alignItems: 'right',
     padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '##069e8c',
   },
   header: {
     fontSize: 32,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#069e8c',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 5,
@@ -81,12 +82,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   link: {
-    color: '#007BFF',
+    color: '#069e8c',
     textDecorationLine: 'underline',
   },
   message: {
     fontSize: 18,
-    color: 'black',
+    color: '#069e8c',
   },
 });
 

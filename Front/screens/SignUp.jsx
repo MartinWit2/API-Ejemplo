@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Link } from '@react-navigation/native';
 import Input from '../components/Input';
-import { commonStyles } from '../styles';
+//import { commonStyles } from '../styles';
 
 export default function SignUp({ navigation }) {
   const [username, setUsername] = React.useState('');
@@ -23,8 +23,9 @@ export default function SignUp({ navigation }) {
       body: JSON.stringify(user)
     };
 
-    fetch('http://localhost:5000/register', options)
+    fetch('http://localhost:5000/SignUp', options)
       .then(response => response.json())
+      console.log(user)
       .then(response => {
         if (response.message === 'user created') {
           setMessage('Usuario creado');
@@ -54,10 +55,10 @@ export default function SignUp({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'right',
+    alignItems: 'right',
     padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '##069e8c',
   },
   header: {
     fontSize: 32,
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#069e8c',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 5,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   link: {
-    color: '#007BFF',
+    color: '#069e8c',
     textDecorationLine: 'underline',
   },
   message: {
