@@ -1,64 +1,55 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Link } from '@react-navigation/native';
-import Input from '../components/Input';
-//import { commonStyles } from '../styles';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { Link } from '@react-navigation/native'
+import Input from '../components/Input'
+import React from 'react'
+import { commonStyles } from '../styles'
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { userContext } from '../context/userContext'
 
 export default function SignUp({ navigation }) {
-  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [message, setMessage] = React.useState('');
+  const { setUser } = React.useContext(userContext);
 
-  const signUp = () => {
-    const user = {
-      username: username,
-      pass: password
-    };
+  const auth = getAuth();
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(user)
-    };
-
-    fetch('http://localhost:5000/SignUp', options)
-      .then(response => response.json())
-      console.log(user)
-      .then(response => {
-        if (response.message === 'user created') {
-          setMessage('Usuario creado');
-          navigation.navigate('Home', { user });
-        } else {
-          setMessage('El usuario ya existe');
-        }
+  const handleSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        setUser(user);
+        setMessage("Usuario creado");
+        navigation.replace('Home');
+      })
+      .catch((error) => {
+        console.error(error);
+        setMessage("El registro no pudo completarse");
       });
-  };
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Registrarse</Text>
-      <Input label='Nombre de Usuario' placeholder='Ingrese un Nombre de Usuario' setUsername={setUsername} secureTextEntry={false} />
-      <Input label='Contraseña' placeholder='Ingrese una Contraseña' setPassword={setPassword} secureTextEntry={true} />
-      <TouchableOpacity style={styles.button} onPress={signUp}>
+      <Input label='Email' placeholder='Ingresa un mail' value={email} onChangeText={setEmail} secureTextEntry={false} />
+      <Input label='Password' placeholder='Ingrese una Contraseña' value={password} onChangeText={setPassword} secureTextEntry={true} />
+      <Text style={styles.passwordRequirement}>La contraseña debe tener al menos 6 caracteres</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Registrarse</Text>
       </TouchableOpacity>
-      <Text style={styles.linkText}>
-        ¿Ya tienes una cuenta? <Link to={{ screen: 'Login'}} style={styles.link}>Iniciar sesión</Link>
-      </Text>
+      <Text style={styles.haveAccountText}>¿Ya tienes una cuenta? <Link style={styles.link} to={{ screen: 'Login' }}>Ingresar</Link></Text>
       <Text style={styles.message}>{message}</Text>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'right',
-    alignItems: 'right',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: '##069e8c',
+    backgroundColor: 'white',
   },
   header: {
     fontSize: 32,
@@ -78,16 +69,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  linkText: {
+  passwordRequirement: {
+    padding: 10,
+    fontSize: 14,
+    color: 'gray'
+  },
+  haveAccountText: {
+    paddingVertical: 10,
     fontSize: 16,
-    marginBottom: 20,
+    textAlign: 'center'
   },
   link: {
-    color: '#069e8c',
-    textDecorationLine: 'underline',
+    color: 'blue',
+    textDecorationLine: 'underline'
   },
   message: {
+    padding: 10,
     fontSize: 18,
-    color: 'black',
-  },
+    color: 'black'
+  }
 });

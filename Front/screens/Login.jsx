@@ -1,69 +1,65 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { Link } from '@react-navigation/native';
 import Input from '../components/Input';
-//import { commonStyles } from '../styles';
+import { commonStyles } from '../styles';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { userContext } from '../context/userContext';
 
 function Login({ navigation }) {
-  const [username, setUsuario] = React.useState('');
-  const [password, setContraseña] = React.useState('');
-  const [message, setMessage] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const { setUser } = React.useContext(userContext);
 
-  const login = () => {
-    const user = {
-      username: username,
-      pass: password
-    };
+  const auth = getAuth();
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(user)
-    };
-
-    fetch('http://localhost:5000/login', options)
-      .then(response => response.json())
-      console.log(user)
-      .then(response => {
-        if (response.message === 'authenticated') {
-          setMessage('Usuario autenticado correctamente');
-          navigation.navigate('Home', { user });
-        } else {
-          setMessage('Los datos ingresados no son correctos');
-        }
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const userLogged = userCredential.user;
+        setUser(userLogged);
+        setMessage('Usuario autenticado correctamente');
+        navigation.replace('Home');
+      })
+      .catch((error) => {
+        console.error(error);
+        setMessage('Los datos ingresados no son correctos');
       });
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
-      <Input label='Usuario' placeholder='Ingrese su Nombre de Usuario' setUsername={setUsuario} secureTextEntry={false} />
-      <Input label='Contraseña' placeholder='Ingrese su Contraseña' setPassword={setContraseña} secureTextEntry={true} />
-      <TouchableOpacity style={styles.button} onPress={login}>
+      <Text style={styles.header}>Ingresar</Text>
+      <Input label='Email' placeholder='Pon tu email' value={email} onChangeText={setEmail} secureTextEntry={false} />
+      <Input label='Contraseña' placeholder='Ingrese su Contraseña' value={password} onChangeText={setPassword} secureTextEntry={true} />
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
-      <Text style={styles.linkText}>
-        No tienes cuenta? <Link to={{ screen: 'SignUp'}} style={styles.link}>Regístrate</Link>
-      </Text>
       <Text style={styles.message}>{message}</Text>
+      <Text style={styles.link}>¿No tienes una cuenta aún? <Link to={{ screen: 'SignUp' }}>Registrarse</Link></Text>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'right',
-    alignItems: 'right',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: '##069e8c',
+    backgroundColor: 'white',
+  },
+  logo: {
+    width: 100, // Ajusta el tamaño de la imagen según tus necesidades
+    height: 100, // Ajusta el tamaño de la imagen según tus necesidades
+    marginBottom: 20,
   },
   header: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#333',
   },
   button: {
     backgroundColor: '#069e8c',
@@ -77,18 +73,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  linkText: {
+  message: {
     padding: 10,
-    fontSize: 16,
+    fontSize: 18,
+    color: 'black'
   },
   link: {
-    color: '#069e8c',
-    textDecorationLine: 'underline',
-  },
-  message: {
-    fontSize: 18,
-    color: '#069e8c',
-  },
+    color: 'blue',
+    textDecorationLine: 'underline'
+  }
 });
 
 export default Login;

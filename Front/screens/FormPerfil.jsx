@@ -1,12 +1,16 @@
+
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Input from '../components/Input'
 import React from 'react'
 import { commonStyles } from '../styles'
+import { setDoc, doc, updateDoc } from 'firebase/firestore'
+import { dbContext } from '../context/dbContext.js'
 
 export default function FormPerfil({ route, navigation }) {
-    const { hasProfile, prevProfile } = route.params
+    const db = React.useContext(dbContext)
+    const { hasProfile, prevProfile, user_uid } = route.params
 
-    console.log(prevProfile)
+    console.log(hasProfile)
 
     const [nombre, setNombre] = React.useState('')
     const [apellido, setApellido] = React.useState('')
@@ -14,44 +18,37 @@ export default function FormPerfil({ route, navigation }) {
     const crearPerfil = () => {
         const perfil = {
             nombre: nombre,
-            apellido: apellido
+            apellido: apellido,
+            user_uid: user_uid
         }
-        console.log(perfil)
+        console.log("Nombre:", nombre);
+    console.log("Apellido:", apellido);
         if (hasProfile) {
-            const options = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(perfil)
-            }
-            const url = 'http://localhost:5000/updateProfile/' + prevProfile.id
-            fetch(url, options)
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response)
-                    if (response.message === 'profile updated') {
-                        navigation.navigate('Perfil', { perfil })
-                    }
-                })
+            const fetchData = async () => {
+                try {
+                    await updateDoc(doc(db, "perfil", user_uid), perfil);
+                } catch (error) {
+                    console.error(error)
+                } finally {
+                }
+            };
+    
+            fetchData();
 
         } else {
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(perfil)
-            }
-            fetch('http://localhost:5000/createProfile', options)
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response)
-                    if (response.message === 'profile created') {
-                        navigation.navigate('Perfil', { perfil })
-                    }
-                })
+            const fetchData = async () => {
+                try {
+                    await setDoc(doc(db, "perfil", user_uid), perfil);
+                } catch (error) {
+                    console.error(error)
+                } finally {
+                }
+            };
+    
+            fetchData();
         }
+
+        navigation.replace('Perfil', { perfil: { nombre: nombre, apellido: apellido, user_uid: user_uid } });
     }
 
     return (
@@ -61,6 +58,9 @@ export default function FormPerfil({ route, navigation }) {
             <Input label='Apellido' placeholder='Ingrese su Apellido' setPassword={setApellido} secureTextEntry={false} />
             <TouchableOpacity style={commonStyles.editButton} onPress={crearPerfil}>
                 <Text style={commonStyles.buttonText}>Cargar Datos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={commonStyles.volverButton} onPress={() => navigation.navigate('Perfil', { perfil: { nombre: nombre, apellido: apellido, user_uid: user_uid } })}>
+                <Text style={commonStyles.buttonText}>Volver</Text>
             </TouchableOpacity>
         </View>
     )
