@@ -15,6 +15,8 @@ function Login({ navigation }) {
   const auth = getAuth();
 
   const handleLogin = () => {
+    console.log(email);
+    console.log(password);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const userLogged = userCredential.user;
@@ -24,7 +26,8 @@ function Login({ navigation }) {
       })
       .catch((error) => {
         console.error(error);
-        setMessage('Los datos ingresados no son correctos');
+        setMessage(`Recuerde que el mail para ser valido tiene que tener @.
+        Y la contraseña tener mas de 8 caracteres.`);
       });
   }
 
@@ -37,7 +40,7 @@ function Login({ navigation }) {
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
       <Text style={styles.message}>{message}</Text>
-      <Text style={styles.link}>¿No tienes una cuenta aún? <Link to={{ screen: 'SignUp' }}>Registrarse</Link></Text>
+      <Link to={{ screen: 'SignUp' }}><Text style={styles.link}>¿No tienes una cuenta aún? Registrarse</Text></Link>
     </View>
   )
 }

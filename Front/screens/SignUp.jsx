@@ -17,8 +17,10 @@ export default function SignUp({ navigation }) {
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        console.log(userCredential.user)
+        const user = userCredential.user.email;
         setUser(user);
+        console.log(user);
         setMessage("Usuario creado");
         navigation.replace('Home');
       })
