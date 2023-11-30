@@ -1,29 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { dbContext } from '../context/dbContext.js';
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { userContext } from '../context/userContext';
 import { getAuth } from 'firebase/auth';
-import { commonStyles } from '../styles';
 
-import { createStackNavigator } from '@react-navigation/stack';
-
-const Stack = createStackNavigator();
-
-const DogScreen = ({ route }) => {
-    const { dogImage, dogName, dogAge } = route.params;
-
-    return (
-        <View style={commonStyles.container}>
-            <Image source={{ uri: dogImage }} style={{ width: 200, height: 200, marginVertical: 10 }} />
-            <Text style={commonStyles.header}>Nombre: {dogName}</Text>
-            <Text style={commonStyles.header}>Edad: {dogAge}</Text>
-        </View>
-    );
-};
-
-export default function Home({ navigation }) {
+const Home = ({ navigation }) => {
     const db = useContext(dbContext);
     const { user } = useContext(userContext);
     const [hasProfile, setHasProfile] = useState(false);
@@ -52,7 +35,6 @@ export default function Home({ navigation }) {
                 querySnapshot.forEach((doc) => {
                     data.push(doc.data());
                 });
-                console.log(data[0]);
                 setProfile(data[0]);
                 if (data.length > 0) setHasProfile(true);
             } catch (error) {
@@ -82,63 +64,100 @@ export default function Home({ navigation }) {
         }
     };
 
-    return isLoading ? (
-        <View style={commonStyles.container}>
-            <Text style={commonStyles.header}>Cargando...</Text>
-        </View>
-    ) : hasProfile ? (
-        <View style={commonStyles.container}>
-            <Text style={commonStyles.header}>Bienvenido {profile.nombre} {profile.apellido}</Text>
-            <TouchableOpacity
-                style={commonStyles.editButton}
-                onPress={() => navigation.replace('Perfil', { perfil: profile })}
-            >
-                <Text style={commonStyles.buttonText}>Ver perfil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={commonStyles.logoutButton}
-                onPress={logout}
-            >
-                <Text style={commonStyles.buttonText}>Cerrar sesión</Text>
-            </TouchableOpacity>
+    return (
+        <View style={styles.container}>
+            {isLoading ? (
+                <Text style={styles.header}>Cargando...</Text>
+            ) : hasProfile ? (
+                <View>
+                    <Text style={styles.header}>Bienvenido {profile.nombre} {profile.apellido}</Text>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.replace('Perfil', { perfil: profile })}
+                    >
+                        <Text style={styles.buttonText}>Ver perfil</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={logout}
+                    >
+                        <Text style={styles.buttonText}>Cerrar sesión</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity
-                style={commonStyles.editButton}
-                onPress={fetchDogImage}
-            >
-                <Text style={commonStyles.buttonText}>Ver Perros</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={fetchDogImage}
+                    >
+                        <Text style={styles.buttonText}>Ver Perros</Text>
+                    </TouchableOpacity>
 
-            {dogImage && (
-                <Image source={{ uri: dogImage }} style={{ width: 200, height: 200, marginVertical: 10 }} />
-            )}
-        </View>
-    ) : (
-        <View style={commonStyles.container}>
-            <Text style={commonStyles.header}>Bienvenido {user.username}</Text>
-            <TouchableOpacity
-                style={commonStyles.editButton}
-                onPress={() => navigation.replace('FormPerfil', { hasProfile: hasProfile, prevProfile: null, user_uid: user.uid })}
-            >
-                <Text style={commonStyles.buttonText}>Completa tu perfil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={commonStyles.logoutButton}
-                onPress={logout}
-            >
-                <Text style={commonStyles.buttonText}>Cerrar sesión</Text>
-            </TouchableOpacity>
+                    {dogImage && (
+                        <Image source={{ uri: dogImage }} style={styles.dogImage} />
+                    )}
+                </View>
+            ) : (
+                <View>
+                    <Text style={styles.header}>Bienvenido {user.username}</Text>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.replace('FormPerfil', { hasProfile: hasProfile, prevProfile: null, user_uid: user.uid })}
+                    >
+                        <Text style={styles.buttonText}>Completa tu perfil</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={logout}
+                    >
+                        <Text style={styles.buttonText}>Cerrar sesión</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity
-                style={commonStyles.editButton}
-                onPress={fetchDogImage}
-            >
-                <Text style={commonStyles.buttonText}>Ver Perros</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={fetchDogImage}
+                    >
+                        <Text style={styles.buttonText}>Ver Perros</Text>
+                    </TouchableOpacity>
 
-            {dogImage && (
-                <Image source={{ uri: dogImage }} style={{ width: 200, height: 200, marginVertical: 10 }} />
+                    {dogImage && (
+                        <Image source={{ uri: dogImage }} style={styles.dogImage} />
+                    )}
+                </View>
             )}
         </View>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 16,
+    },
+    header: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginVertical: 10,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: '#2196F3',
+        padding: 10,
+        marginVertical: 5,
+        width: '100%',
+        alignItems: 'center',
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    dogImage: {
+        width: 200,
+        height: 200,
+        marginVertical: 10,
+        borderRadius: 8,
+    },
+});
+
+export default Home;
