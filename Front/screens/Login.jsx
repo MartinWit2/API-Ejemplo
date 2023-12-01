@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { Link } from '@react-navigation/native';
 import Input from '../components/Input';
@@ -30,7 +30,6 @@ function Login({ navigation }) {
         Y la contraseña tener mas de 8 caracteres.`);
       });
   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Ingresar</Text>

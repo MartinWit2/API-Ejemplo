@@ -19,10 +19,10 @@ export default function SignUp({ navigation }) {
       .then((userCredential) => {
         console.log(userCredential.user)
         const user = userCredential.user.email;
-        setUser(user);
+        setUser(userCredential.user.email);
         console.log(user);
         setMessage("Usuario creado");
-        navigation.replace('Home');
+        navigation.replace('Login');
       })
       .catch((error) => {
         console.error(error);
